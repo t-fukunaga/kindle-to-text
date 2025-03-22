@@ -1,100 +1,96 @@
-# kindle-translator
+# Kindle to PDF Converter for MacOS
 
-非母語で書かれた電子書籍やPDFを母語で書かれたPDFに翻訳するツールです。
+A simple utility to capture Kindle pages from your screen and convert them to PDF format. This tool is designed specifically for MacOS users.
 
-# 特長
+## Features
 
-一冊50万字あるKindleの洋書を1分で日本語PDFに変換できます。
+- Capture any portion of your screen containing Kindle content
+- Automatically turn pages and capture each one
+- Detect when you've reached the end of the book
+- Convert all captured pages to a single high-quality PDF
+- Simple, user-friendly interface
 
-キーボードの矢印キーでページ送りができるならKindleに限らずあらゆる電子書籍リーダおよびPDFビューワで使え、DeepLが対応している言語であれば英語以外の言語でも翻訳できます(仏→日とか)。
+## Requirements
 
-# これがこうなる
+- Python 3.7 or higher
+- MacOS (tested on Monterey and newer)
+- Kindle app or Kindle Cloud Reader in a browser
 
-![Kindle for PC - The Ethics of Cybersecurity_ 21 (The International Library of Ethics, Law and Technology) 2022_11_08 23_22_07](https://user-images.githubusercontent.com/99042183/201051157-86063261-ad8e-4ad8-977b-efc73a9359e5.png)
+## Installation
 
-↓
+1. Clone this repository or download the script file:
 
-![Cybersecurity pdf - Adobe Acrobat Reader (64-bit) 2022_11_08 23_36_27](https://user-images.githubusercontent.com/99042183/201051238-43cbea77-1dae-4f98-9899-f37f24348940.png)
+```bash
+git clone https://github.com/yourusername/kindle-to-pdf-mac.git
+cd kindle-to-pdf-mac
+```
 
-(引用 **The Ethics of Cybersecurity (The International Library of Ethics, Law and Technology Book 21) by by Markus Christen, Bert Gordijn, et al. Feb 10, 2020)
-(CC: BYです)
-
-# 必要なライブラリ
-
-pyautogui  
-img2pdf  
-Pillow  
-opencv-python  
-pyocr  
-fpdf2  
-python-dotenv  
-requests  
-
-# 準備
-
-## 1. pipまたはcondaが使えるPythonの実行環境
-
-本ツールはpythonで書かれています。必要なライブラリをrequirements.txtおよびvenv.yamlに出力してあるので、pipを使う場合はrequirements.txtを、condaを使う場合はvenv.yamlをそれぞれ使用して仮想環境を整えてください。
-
-### pipを使ったインストール
+2. Install required packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### condaを使ったインストール
+
+
+## Usage
+
+1. Open your Kindle app and navigate to the book you want to capture
+2. Run the script:
 
 ```bash
-conda <env name> create -f venv.yml
+python kindle_to_pdf.py
 ```
 
-## 2. DeepL APIの登録
+3. Follow the prompts to:
+   - Enter a name for your book
+   - Position your cursor at the top-left corner of the reading area
+   - Position your cursor at the bottom-right corner of the reading area
+   - Wait for the capture process to complete
 
-以下からAPI版DeepLに登録してください。(無料版であってもクレジットカードの登録が必要です)
+4. Find your PDF in the output folder (default: `~/Desktop/KindlePDF/your_book_name/`)
 
-[https://www.deepl.com/ja/pro#developer](https://www.deepl.com/ja/pro#developer)
-
-無料版で構いませんが、その場合はtranslator.pyの48行目のURLをapi.deepl.comからapi-free.deepl.comに変更しておく必要があります。
-
-登録が済んだら、[local.env](./local.env)の`DEEPL_API_KEY`を入力してください。
-
-## 3. Tesseractのインストール
-
-以下から自分の環境に合ったインストーラをダウンロードしてください。
-
-[https://github.com/UB-Mannheim/tesseract/wiki](https://github.com/UB-Mannheim/tesseract/wiki)
-
-インストールが終わったら、[local.env](./local.env)の`TESSERACT_PATH`を自分の環境に適したパスへと変更してください。
-
-## 4. フォルダパスの設定
-
-画像保存用フォルダとテキストファイル(とできたPDFファイル)を保存するフォルダを準備し、[local.env](./local.env)の`OUTPUT_IMG_FOLDER`と`OUTPUT_TXT_FOLDER`を適宜変更してください。
-
-# 使い方
-
-![Anaconda Powershell Prompt (Anaconda3) 2022_11_08 23_36_32](https://user-images.githubusercontent.com/99042183/201052912-550244b1-873b-4755-9c10-6936bee8f898.png)
-
-このリポジトリをcloneし、
+### Command Line Options
 
 ```
-python kindle_translator.py
+usage: kindle_to_pdf.py [-h] [--book BOOK] [--direction {right,left}]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --book BOOK           Book name (used for folder naming)
+  --direction {right,left}
+                        Page turn direction (default: right)
 ```
 
-を実行するだけでOKです。画像の通り、ほとんどの作業がコンソール上で進みます。
+## Customization
 
-その後は**電子書籍リーダをクリックしてアクティブにした上で**左上にカーソルをあてて10秒待ち、また右下にカーソルをあてて10秒待ちます。
+You can customize the behavior by creating a `.env` file in the same directory as the script with these settings:
 
-すると座標が取得でき、保存するファイル名・フォルダ名を聞かれるので入力しましょう。拡張子はいりません。
+```
+OUTPUT_FOLDER=~/Documents/KindlePDF
+PAGE_TURN_KEY=left
+CAPTURE_DELAY=0.3
+```
 
-あとは自動でフォルダが作られ、翻訳され、できたPDFがフォルダに格納されます。
+## Troubleshooting
 
-# 注意
+### Pages are being skipped or not captured correctly
 
-- デフォルトでは、ページ送り方向が【右】になっています。必要に応じて変更してください。(capture.py 104-105行目、118-119行目)
-- 現在のバージョンでは、スクリーンショットの撮影を行うため大量のpngファイルが生成されます。容量に余裕をもって実行してください。
-- 現在のバージョンでは、生成されたpngファイルやtxtファイルは自動で削除されません。必要に応じて手動で消去してください。
+- Increase the `CAPTURE_DELAY` value in the `.env` file to give more time between page turns
+- Make sure your Kindle app is in focus during capture
+- Try using a smaller capture area to speed up the process
 
-# 制作者
+### The converter stops too early
 
-- 相良スヒト
-- Twitter: @1plus1is__
+- Some Kindle books have special pages that look similar - try manually checking if you've reached the end
+- You can press Ctrl+C to stop the capture process at any time
+
+## Limitations
+
+- This tool works by taking screenshots and doesn't extract actual text content
+- The quality of the PDF depends on your screen resolution
+- DRM protection still applies to the content
+
+## Legal Considerations
+
+This tool is meant for personal use only to create backups of books you legally own. Please respect copyright laws and only use this for books you have purchased.
