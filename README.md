@@ -16,6 +16,21 @@ A simple utility to capture Kindle pages from your screen and convert them to PD
 - MacOS (tested on Monterey and newer)
 - Kindle app or Kindle Cloud Reader in a browser
 
+## MacOSでの権限設定
+
+このツールはキーボード入力とスクリーンキャプチャを自動的に行うため、MacOSのセキュリティ設定で適切な権限を付与する必要があります：
+
+1. **システム環境設定**（または設定）を開く
+2. **セキュリティとプライバシー** > **プライバシー**タブに移動
+3. 左側のリストから **アクセシビリティ** を選択
+4. 右側のリストで以下のアプリにチェックを入れる：
+   - Terminal（ターミナルからスクリプトを実行する場合）
+   - VSCode、Cursor、その他使用するエディタやIDE
+5. **画面収録** を選択し、同様に使用するアプリに権限を付与
+6. 変更を適用するには、アプリの再起動が必要な場合があります
+
+権限が正しく設定されていない場合、スクリプトは自動操作を実行できず、エラーが発生します。
+
 ## Installation
 
 1. Clone this repository or download the script file:
@@ -30,8 +45,6 @@ cd kindle-to-pdf-mac
 ```bash
 pip install -r requirements.txt
 ```
-
-
 
 ## Usage
 
