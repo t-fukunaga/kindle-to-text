@@ -49,6 +49,7 @@ class Capture:
 
     def window_capture(
         self,
+        direction: str,
         x_1: int,
         y_1: int,
         x_2: int,
@@ -104,8 +105,8 @@ class Capture:
         screen_shot.save(png_name)
 
         # ページ送りの方向(デフォルトは右)
-        pyautogui.keyDown('right')
-        pyautogui.keyUp('right')
+        pyautogui.keyDown(direction)
+        pyautogui.keyUp(direction)
         time.sleep(span)
 
         # 残りのページのスクリーンショット撮影
@@ -118,8 +119,8 @@ class Capture:
                 y_2 - y_1
             ))
             screen_shot.save(png_name)
-            pyautogui.keyDown('right')
-            pyautogui.keyUp('right')
+            pyautogui.keyDown(direction)
+            pyautogui.keyUp(direction)
             img_prev_name = f'picture_{page-1}.png'
 
             # 前のページとの差分を比較

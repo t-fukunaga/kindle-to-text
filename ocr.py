@@ -2,11 +2,10 @@
     kindle-translator
 """
 import os
-import pyocr
 from os import path
 from constant import TESSERACT_PATH, OUTPUT_TXT_FOLDER
 from PIL import Image
-
+import pytesseract
 
 class OCR:
     """
@@ -16,8 +15,10 @@ class OCR:
         self,
         page_number: int,
         file_name: str,
-        img_file_path: str
+        img_file_path: str,
+        lang: str = "eng"
     ) -> str:
+    
         """
         :関数名:
             - extract_characters
@@ -32,14 +33,8 @@ class OCR:
             - 保存するテキストファイルの名前(str型)
         """
         print('画像からテキストへの変換を行います')
-        # 自分のOCRパスを設定する
-        # 環境変数に設定しているのであれば以下2行は必要ない
-        os.environ['PATH'] = os.environ['PATH'] + TESSERACT_PATH
-
-        # tesseractの設定
-        pyocr.tesseract.TESSERACT_CMD = path.join(TESSERACT_PATH, 'tesseract.exe')
-        tools = pyocr.get_available_tools()
-        tool = tools[0]
+        # tesseractのパスを設定
+        pytesseract.pytesseract.tesseract_cmd = path.join(TESSERACT_PATH, 'tesseract.exe')
 
         file_name_txt = f'{file_name}.txt'
 
@@ -52,9 +47,10 @@ class OCR:
         # picture_0.pngのような名前の画像を一枚ずつ読み込みして文字を抽出
         text_list = []
         for page in range(page_number):
+            print(page)
             img = Image.open(f'{img_file_path}/picture_{page}.png')
-            builder = pyocr.builders.TextBuilder(tesseract_layout=6)
-            text = tool.image_to_string(img, lang="eng", builder=builder)
+            text = pytesseract.image_to_string(img, lang=lang)
+            text += '\n' # 改行を追加
             text_list.append(text)
 
         # ひとつのテキストファイルに書き込み
@@ -92,16 +88,3 @@ class OCR:
         f = open(file_name_txt, "r", encoding="utf-8")
         file = f.read()
         file_length = len(file)
-        split_length = 100000
-        for data in range(0, file_length, split_length):
-            page_data = (file[data:data+split_length])
-            save_file_name = f'{file_name}_{num}.txt'
-            with open(save_file_name, 'w', encoding='utf-8') as save_file:
-                save_file.write(page_data)
-            # 読み込み位置の更新
-            num += 1
-            file_list.append(save_file_name)
-
-        print('テキストファイルの分割が終了しました')
-
-        return file_list

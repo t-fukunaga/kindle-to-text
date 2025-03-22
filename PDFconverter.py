@@ -28,11 +28,14 @@ class PDFConverter:
 
         pdf.add_page()
 
+
+
         pdf.add_font("yumin", fname=FONT_PATH, uni=True)
         pdf.set_font('yumin', size=12)
 
         # テキストファイルを開いてPDF形式で書き込み
-        with open(f'JA_{file_name}.txt', 'r', encoding='utf-8') as f:
+        #with open(f'JA_{file_name}.txt', 'r', encoding='utf-8') as f:
+        with open(f'{file_name}.txt', 'r', encoding='utf-8') as f:
             for page in f:
                 pdf.write(txt=page)
 
